@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="4"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="info" docName="draft-boucadair-opsawg-rfc7125-update-latest"
+     ipr="trust200902" updates="7125">
+  <front>
+    <title abbrev="tcpControlBits IPFIX IE">An Update to the tcpControlBits IP
+    Flow Information Export (IPFIX) Information Element</title>
+
+    <author fullname="Mohamed Boucadair" initials="M." surname="Boucadair">
+      <organization>Orange</organization>
+
+      <address>
+        <postal>
+          <street></street>
+
+          <city>Rennes</city>
+
+          <region></region>
+
+          <code>35000</code>
+
+          <country>France</country>
+        </postal>
+
+        <email>mohamed.boucadair@orange.com</email>
+      </address>
+    </author>
+
+    <date />
+
+    <keyword>Transport</keyword>
+
+    <abstract>
+      <t>RFC 7125 revised the tcpControlBits IP Flow Information Export
+      (IPFIX) Information Element that was originally defined in RFC 5102 to
+      reflect changes to the TCP Flags header field since RFC 793. However,
+      that update is still problematic for interoperability because some
+      values were deprecated since then. </t>
+
+      <t>This document updates RFC 7125 by removing stale information from the
+      IPFIX registry and avoiding conflicts with authoritative TCP
+      registry.</t>
+    </abstract>
+  </front>
+
+  <middle>
+    <section anchor="introduction" title="Introduction">
+      <t>TCP defines a set of control bits (also known as "flags") for
+      managing connections. The "Transmission Control Protocol (TCP) Header
+      Flags" registry was initially set by <xref target="RFC3168"></xref>, but
+      it was populated with only TCP control bits that were defined in <xref
+      target="RFC3168"></xref>. <xref target="RFC9293"></xref> fixed that by
+      moving that registry to be listed as a subregistry under the
+      "Transmission Control Protocol (TCP) Parameters" registry, adding bits
+      that had previously been specified in <xref target="RFC0793"></xref>,
+      and removing the NS (Nonce Sum) bit as per <xref
+      target="RFC8311"></xref>. Also, <xref target="RFC9293"></xref>
+      introduces "Bit Offset" to ease referencing each header flag's offset
+      within the 16-bit aligned view of the TCP header (Section 3.1 of <xref
+      target="RFC9293"></xref>). <xref target="TCP-FLAGS"></xref> is thus
+      settled the authoritative reference for the assigned TCP control
+      bits.</t>
+
+      <t><xref target="RFC7125"></xref> revised the tcpControlBits IP Flow
+      Information Export (IPFIX) Information Element that was originally
+      defined in <xref target="RFC5102"></xref> to reflect changes to the TCP
+      Flags header field since <xref target="RFC0793"></xref>. However, that
+      update is still problematic for interoperability because a value was
+      deprecated since then (Section 7 of <xref target="RFC8311"></xref>) and,
+      therefore, <xref target="RFC7125"></xref> risks to deviate from the
+      authoritative registry <xref target="TCP-FLAGS"></xref>. Because the
+      setting of control bits may be misused in some flows (e.g., DDoS
+      attacks), an exporter has to report all observed control bits even if no
+      meaning is currently associated with a given flag. </t>
+
+      <t>This document fixes that problem by removing stale information from
+      the IPFIX registry and avoiding future conflicts with the authoritative
+      TCP registry. See <xref target="update"></xref> for more details. </t>
+    </section>
+
+    <section anchor="notation" title="Terminology">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described in BCP 14
+      <xref target="RFC2119"></xref> <xref target="RFC8174"></xref> when, and
+      only when, they appear in all capitals, as shown here.</t>
+
+      <t>This document uses the terms defined in Section 2 of <xref
+      target="RFC7011"></xref>. </t>
+    </section>
+
+    <section anchor="update"
+             title="An Update to tcpControlBits IP Flow Information Export (IPFIX) Information Element">
+      <t>This document updates Section 3 of <xref target="RFC7125"></xref> as
+      follows:<list style="hanging">
+          <t hangText="OLD:"><vspace blankLines="1" />The values of each bit
+          are shown below, per the definition of the bits in the TCP header
+          <xref target="RFC0793"></xref><xref target="RFC3168"></xref>
+          [RFC3540]:<figure>
+              <artwork><![CDATA[       MSb                                                         LSb
+  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
++---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+|               |           | N | C | E | U | A | P | R | S | F |
+|     Zero      |   Future  | S | W | C | R | C | S | S | Y | I |
+| (Data Offset) |    Use    |   | R | E | G | K | H | T | N | N |
++---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
+
+bit    flag
+value  name  description
+------+-----+-------------------------------------
+0x8000       Zero (see tcpHeaderLength)
+0x4000       Zero (see tcpHeaderLength)
+0x2000       Zero (see tcpHeaderLength)
+0x1000       Zero (see tcpHeaderLength)
+0x0800       Future Use
+0x0400       Future Use
+0x0200       Future Use
+0x0100   NS  ECN Nonce Sum
+0x0080  CWR  Congestion Window Reduced
+0x0040  ECE  ECN Echo
+0x0020  URG  Urgent Pointer field significant
+0x0010  ACK  Acknowledgment field significant
+0x0008  PSH  Push Function
+0x0004  RST  Reset the connection
+0x0002  SYN  Synchronize sequence numbers
+0x0001  FIN  No more data from sender]]></artwork>
+            </figure><vspace blankLines="1" /> As the most significant 4 bits
+          of octets 12 and 13 (counting from zero) of the TCP header <xref
+          target="RFC0793"></xref> are used to encode the TCP data offset
+          (header length), the corresponding bits in this Information Element
+          MUST be exported as zero and MUST be ignored by the collector. Use
+          the tcpHeaderLength Information Element to encode this value.<vspace
+          blankLines="1" />Each of the 3 bits (0x800, 0x400, and 0x200), which
+          are reserved for future use in <xref target="RFC0793"></xref>,
+          SHOULD be exported as observed in the TCP headers of the packets of
+          this Flow.</t>
+
+          <t hangText="NEW:"><vspace blankLines="1" />As per <xref
+          target="RFC9293"></xref>, the assignment of the TCP control bits is
+          managed by IANA from the "TCP Header Flags" registry <xref
+          target="TCP-FLAGS"></xref>. That registry is authoritative to
+          retrieve the most recent TCP control bits.<vspace
+          blankLines="1" />As the most significant 4 bits of octets 12 and 13
+          (counting from zero) of the TCP header <xref
+          target="RFC9293"></xref> are used to encode the TCP data offset
+          (header length), the corresponding bits in this Information Element
+          MUST be exported as zero and MUST be ignored by the collector. Use
+          the tcpHeaderLength Information Element to encode this value.<vspace
+          blankLines="1" />TCP control bits (including unassigned) MUST be
+          exported as observed in the TCP headers of the packets of this
+          Flow.</t>
+        </list></t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>IANA is requested to update the "tcpControlBits" entry of the <xref
+      target="IPFIX"></xref> as follows: <list style="symbols">
+          <t>Update the description of to reflect the change in <xref
+          target="update"></xref>.</t>
+
+          <t>Add <xref target="TCP-FLAGS"></xref> to the Additional
+          Information field. </t>
+
+          <t>Add this document to the references</t>
+        </list></t>
+
+      <t></t>
+    </section>
+
+    <section anchor="security" title="Security Considerations">
+      <t>This document does add new security considerations to those already
+      discussed in Section 5 of <xref target="RFC7125"></xref>.</t>
+    </section>
+
+    <section anchor="ack" title="Acknowledgements">
+      <t>This document was triggered by a discussion in opswag with the
+      authors of draft-ietf-opsawg-ipfix-srv6-srh.</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include='reference.RFC.2119'?>
+
+      <?rfc include='reference.RFC.8174'?>
+
+      <?rfc include='reference.RFC.7125'?>
+
+      <?rfc include='reference.RFC.7011'?>
+
+      <?rfc include='reference.RFC.9293'?>
+
+      <reference anchor="TCP-FLAGS"
+                 target="https://www.iana.org/assignments/tcp-parameters/tcp-parameters.xhtml#tcp-header-flags">
+        <front>
+          <title>TCP Header Flags</title>
+
+          <author fullname="IANA">
+            <organization></organization>
+          </author>
+
+          <date />
+        </front>
+      </reference>
+    </references>
+
+    <references title="Informative References">
+      <reference anchor="IPFIX"
+                 target="https://www.iana.org/assignments/ipfix/ipfix.xhtml">
+        <front>
+          <title>IP Flow Information Export (IPFIX) Entities</title>
+
+          <author fullname="IANA">
+            <organization></organization>
+          </author>
+
+          <date />
+        </front>
+      </reference>
+
+      <?rfc include='reference.RFC.3168'?>
+
+      <?rfc include='reference.RFC.8311'?>
+
+      <?rfc include='reference.RFC.0793'?>
+
+      <?rfc include='reference.RFC.5102'?>
+    </references>
+  </back>
+</rfc>
