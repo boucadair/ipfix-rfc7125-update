@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="info" docName="draft-boucadair-opsawg-rfc7125-update-latest"
+<rfc category="std" docName="draft-boucadair-opsawg-rfc7125-update-latest"
      ipr="trust200902" updates="7125">
   <front>
     <title abbrev="tcpControlBits IPFIX IE">An Update to the tcpControlBits IP
@@ -45,10 +45,10 @@
       (IPFIX) Information Element that was originally defined in RFC 5102 to
       reflect changes to the TCP Flags header field since RFC 793. However,
       that update is still problematic for interoperability because some
-      values were deprecated since then. </t>
+      values were deprecated since then.</t>
 
       <t>This document updates RFC 7125 by removing stale information from the
-      IPFIX registry and avoiding conflicts with authoritative TCP
+      IPFIX registry and avoiding conflicts with the authoritative TCP
       registry.</t>
     </abstract>
   </front>
@@ -68,7 +68,7 @@
       introduces "Bit Offset" to ease referencing each header flag's offset
       within the 16-bit aligned view of the TCP header (Section 3.1 of <xref
       target="RFC9293"></xref>). <xref target="TCP-FLAGS"></xref> is thus
-      settled the authoritative reference for the assigned TCP control
+      settled as the authoritative reference for the assigned TCP control
       bits.</t>
 
       <t><xref target="RFC7125"></xref> revised the tcpControlBits IP Flow
@@ -78,14 +78,16 @@
       update is still problematic for interoperability because a value was
       deprecated since then (Section 7 of <xref target="RFC8311"></xref>) and,
       therefore, <xref target="RFC7125"></xref> risks to deviate from the
-      authoritative registry <xref target="TCP-FLAGS"></xref>. Because the
-      setting of control bits may be misused in some flows (e.g., DDoS
-      attacks), an exporter has to report all observed control bits even if no
-      meaning is currently associated with a given flag. </t>
+      authoritative registry <xref target="TCP-FLAGS"></xref>. </t>
 
       <t>This document fixes that problem by removing stale information from
       the IPFIX registry and avoiding future conflicts with the authoritative
-      TCP registry. See <xref target="update"></xref> for more details. </t>
+      TCP registry. Also, because the setting of control bits may be misused
+      in some flows (e.g., DDoS attacks), an exporter has to report all
+      observed control bits even if no meaning is currently associated with a
+      given flag. This document uses a stronger requirement language compared
+      to <xref target="RFC7125"></xref>. See <xref target="update"></xref> for
+      more details.</t>
     </section>
 
     <section anchor="notation" title="Terminology">
@@ -96,7 +98,7 @@
       only when, they appear in all capitals, as shown here.</t>
 
       <t>This document uses the terms defined in Section 2 of <xref
-      target="RFC7011"></xref>. </t>
+      target="RFC7011"></xref>.</t>
     </section>
 
     <section anchor="update"
@@ -169,7 +171,7 @@ value  name  description
           target="update"></xref>.</t>
 
           <t>Add <xref target="TCP-FLAGS"></xref> to the Additional
-          Information field. </t>
+          Information field.</t>
 
           <t>Add this document to the references</t>
         </list></t>
@@ -178,8 +180,8 @@ value  name  description
     </section>
 
     <section anchor="security" title="Security Considerations">
-      <t>This document does add new security considerations to those already
-      discussed in Section 5 of <xref target="RFC7125"></xref>.</t>
+      <t>This document does not add new security considerations to those
+      already discussed in Section 5 of <xref target="RFC7125"></xref>.</t>
     </section>
 
     <section anchor="ack" title="Acknowledgements">

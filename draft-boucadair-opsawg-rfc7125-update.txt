@@ -5,7 +5,7 @@
 Network Working Group                                       M. Boucadair
 Internet-Draft                                                    Orange
 Updates: 7125 (if approved)                            20 September 2022
-Intended status: Informational                                          
+Intended status: Standards Track                                        
 Expires: 24 March 2023
 
 
@@ -22,7 +22,7 @@ Abstract
    because some values were deprecated since then.
 
    This document updates RFC 7125 by removing stale information from the
-   IPFIX registry and avoiding conflicts with authoritative TCP
+   IPFIX registry and avoiding conflicts with the authoritative TCP
    registry.
 
 Status of This Memo
@@ -90,7 +90,7 @@ Table of Contents
    in [RFC0793], and removing the NS (Nonce Sum) bit as per [RFC8311].
    Also, [RFC9293] introduces "Bit Offset" to ease referencing each
    header flag's offset within the 16-bit aligned view of the TCP header
-   (Section 3.1 of [RFC9293]).  [TCP-FLAGS] is thus settled the
+   (Section 3.1 of [RFC9293]).  [TCP-FLAGS] is thus settled as the
    authoritative reference for the assigned TCP control bits.
 
    [RFC7125] revised the tcpControlBits IP Flow Information Export
@@ -99,13 +99,13 @@ Table of Contents
    However, that update is still problematic for interoperability
    because a value was deprecated since then (Section 7 of [RFC8311])
    and, therefore, [RFC7125] risks to deviate from the authoritative
-   registry [TCP-FLAGS].  Because the setting of control bits may be
-   misused in some flows (e.g., DDoS attacks), an exporter has to report
-   all observed control bits even if no meaning is currently associated
-   with a given flag.
+   registry [TCP-FLAGS].
 
-
-
+   This document fixes that problem by removing stale information from
+   the IPFIX registry and avoiding future conflicts with the
+   authoritative TCP registry.  Also, because the setting of control
+   bits may be misused in some flows (e.g., DDoS attacks), an exporter
+   has to report all observed control bits even if no meaning is
 
 
 
@@ -114,9 +114,9 @@ Boucadair                 Expires 24 March 2023                 [Page 2]
 Internet-Draft           tcpControlBits IPFIX IE          September 2022
 
 
-   This document fixes that problem by removing stale information from
-   the IPFIX registry and avoiding future conflicts with the
-   authoritative TCP registry.  See Section 3 for more details.
+   currently associated with a given flag.  This document uses a
+   stronger requirement language compared to [RFC7125].  See Section 3
+   for more details.
 
 2.  Terminology
 
@@ -247,8 +247,8 @@ Internet-Draft           tcpControlBits IPFIX IE          September 2022
 
 5.  Security Considerations
 
-   This document does add new security considerations to those already
-   discussed in Section 5 of [RFC7125].
+   This document does not add new security considerations to those
+   already discussed in Section 5 of [RFC7125].
 
 6.  Acknowledgements
 
